@@ -31,6 +31,7 @@ class TokensController < ActionController::Base
         host: URI.parse(request.env['omniauth.origin']).host
       )
     end
+
     @auth_response = TokenService.create(@session)
 
     if @auth_response
