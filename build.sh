@@ -9,6 +9,12 @@ set -e
 
 # echo "Building image for branch: $BRANCH with tag: $TAG"
 
+# Set DRY_RUN=true to build, tag, and log in to ECR, and to run the
+# read-only ECS lookups below, without pushing the image or touching any
+# running tasks/services. Useful for confirming the image still builds and
+# the AWS role has the permissions it needs, without deploying anything.
+DRY_RUN=${DRY_RUN:-false}
+
 TAG=latest
 
 docker build \
@@ -25,8 +31,12 @@ echo "Logged in successfully"
 echo "Tagging image with ${TAG}"
 docker tag faux_oauth 310867200447.dkr.ecr.us-east-1.amazonaws.com/faux_oauth:latest
 
-echo "Pushing image"
-docker push 310867200447.dkr.ecr.us-east-1.amazonaws.com/faux_oauth:latest
+if [ "$DRY_RUN" = "true" ]; then
+       echo "DRY_RUN set: skipping image push and any change to running tasks/services"
+else
+       echo "Pushing image"
+       docker push 310867200447.dkr.ecr.us-east-1.amazonaws.com/faux_oauth:latest
+fi
 
 CLUSTER=faux_oauth
 SERVICE=faux_oauth
@@ -39,6 +49,11 @@ NETWORK_CONFIG=$(aws ecs describe-services --cluster "$CLUSTER" --services "$SER
        --query 'services[0].networkConfiguration' --output json)
 CONTAINER_NAME=$(aws ecs describe-task-definition --task-definition "$TASK_DEF" --region "$REGION" \
        --query 'taskDefinition.containerDefinitions[0].name' --output text)
+
+if [ "$DRY_RUN" = "true" ]; then
+       echo "DRY_RUN set: skipping migration task and service deployment"
+       exit 0
+fi
 
 echo "Running database migrations as a one-off task before deploying"
 TASK_ARN=$(aws ecs run-task \

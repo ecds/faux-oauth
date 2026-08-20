@@ -1,0 +1,32 @@
+name: Deploy Check
+
+on:
+  pull_request:
+  push:
+    branches: [develop, main]
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+
+jobs:
+  dry-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials from AWS account
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+          aws-region: us-east-1
+          role-session-name: GitHub-OIDC-faux-oauth-check
+
+      - name: Build image and verify AWS access, without deploying
+        env:
+          DRY_RUN: "true"
+        run: |
+          chmod +x build.sh
+          ./build.sh
