@@ -1,4 +1,5 @@
 class PasswordsController < ActionController::Base
+  layout "application"
   rate_limit to: 5, within: 15.minutes, only: :create
 
   def new

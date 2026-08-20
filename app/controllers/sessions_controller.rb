@@ -1,6 +1,7 @@
 class SessionsController < ActionController::Base
   include TokenIssuable
 
+  layout "application"
   rate_limit to: 10, within: 3.minutes, only: :create
 
   def new

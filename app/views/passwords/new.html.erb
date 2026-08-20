@@ -1,9 +1,13 @@
-<h1>Reset your password</h1>
+<h1>Reset password</h1>
+
+<p class="message">Enter your email and we'll send you a link to reset your password.</p>
 
 <%= form_with url: new_password_path(origin: @origin), method: :post do |f| %>
-  <div>
+  <div class="field">
+    <%= f.email_field :email, required: true, placeholder: " " %>
     <%= f.label :email %>
-    <%= f.email_field :email, required: true %>
   </div>
-  <%= f.submit "Send reset link" %>
+  <%= f.submit "Send reset link", class: "btn btn-primary" %>
 <% end %>
+
+<p class="helper"><%= link_to "Back to log in", login_path(origin: @origin) %></p>

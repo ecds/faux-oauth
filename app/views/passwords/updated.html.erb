@@ -1,5 +1,5 @@
 <h1>Password updated</h1>
 
-<p>Your password has been updated. You can now log in.</p>
+<p class="message">Your password has been updated.</p>
 
-<%= link_to "Log in", login_path(origin: @origin) %>
+<%= link_to "Log in", login_path(origin: @origin), class: "btn btn-primary" %>

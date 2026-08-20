@@ -1,5 +1,5 @@
 <h1>Email confirmed</h1>
 
-<p>Your email address is confirmed. You can now log in.</p>
+<p class="message">Your email address is confirmed.</p>
 
-<%= link_to "Log in", login_path(origin: @origin) %>
+<%= link_to "Log in", login_path(origin: @origin), class: "btn btn-primary" %>
