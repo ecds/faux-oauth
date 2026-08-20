@@ -5,7 +5,7 @@ RSpec.describe 'Tokens', type: :request do
   #   before do
   #     request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:github]
   #   end
-    
+
   #   it 'validates token' do
   #     get tokens_path
   #     expect(response).to have_http_status(200)

@@ -41,28 +41,28 @@ Shoulda::Matchers.configure do |config|
 end
 
 OmniAuth.config.test_mode = true
-shibboleth_hash = {
+shibboleth_hash = OmniAuth::AuthHash.new({
   provider: 'shibboleth',
   uid: 'karl@marx.org',
   info: {
     email: 'karl@marx.org'
   }
-}
+})
 
-google_oauth2_hash = {
+google_oauth2_hash = OmniAuth::AuthHash.new({
   provider: 'google_oauth2',
   uid: '123456789',
   info: {
     email: 'karlmarx@gmail.com'
   }
-}
+})
 
-OmniAuth.config.add_mock(:shibboleth, shibboleth_hash)
-OmniAuth.config.add_mock(:google_oauth2, google_oauth2_hash)
+OmniAuth.config.mock_auth[:shibboleth] = shibboleth_hash
+OmniAuth.config.mock_auth[:google_oauth2] = google_oauth2_hash
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  # config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false

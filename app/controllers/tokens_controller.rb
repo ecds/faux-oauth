@@ -1,8 +1,8 @@
 class TokensController < ActionController::Base
   include ActionController::Cookies
   skip_before_action :verify_authenticity_token
-  before_action :set_token, only: [:show, :update, :destroy]
-  before_action :authenticate, only: [:create]
+  before_action :set_token, only: [ :show, :update, :destroy ]
+  before_action :authenticate, only: [ :create ]
 
   # GET /tokens
   def index
@@ -11,27 +11,32 @@ class TokensController < ActionController::Base
     render json: @tokens
   end
 
+  def fail
+    render json: params.to_json
+  end
+
   # GET /tokens?access_token=abcdefghijklmnopqrstuvwxyz
   def verify
-    Rails.logger.debug "cookies: #{cookies.methods}"
+    Rails.logger.debug "TOKEN CONTENTS: #{TokenService.verify(params[:access_token])}"
     render json: TokenService.verify(params[:access_token])
   end
 
   # POST /tokens
   def create
-    # Rails.logger.debug "auth!!!!!! = #{request.env['omniauth.auth'].inspect}"
-    # @session = authenticate(auth_hash)
-    Rails.logger.debug "auth_hash: #{@session.inspect}"
+    @session = authenticate
     # FIXME: ATM it doesn't seem like the `omniauth.origin` can be set in
     # the mock. There is an open WIP PR https://github.com/omniauth/omniauth/issues/934
     if Rails.env.test?
-      @client = Client.find_or_create_by(redirect_uri: 'https://emory.edu/redirect.html')
+      @client = Client.find_or_create_by(redirect_uri: "https://emory.edu/redirect.html")
     else
+      Rails.logger.debug "ORIGIN: #{request.env['omniauth.origin']}"
       @client = Client.find_by(
-        host: URI.parse(request.env['omniauth.origin']).host
+        host: URI.parse(request.env["omniauth.origin"]).host
       )
+      # if @client.nil?
+      #  @client = Client.find_by(host: 'otb.ecdsdev.org')
+      # end
     end
-
     @auth_response = TokenService.create(@session)
 
     if @auth_response
@@ -73,20 +78,21 @@ class TokensController < ActionController::Base
   def generate_url(url, params = {})
     uri = URI(url)
     uri.query = params.to_query
+    Rails.logger.debug "$$$$$$$$$$$$$$$$$$$$$$$$4REDIRECT TO: #{uri}"
     uri.to_s
   end
 
   #
   # Extracts the user information returned by Omniauth provider.
   #
-  # @return [Hash] Hash of user attributes whith symbolized keys. 
+  # @return [Hash] Hash of user attributes whith symbolized keys.
   #
   def auth_hash
-    request.env['omniauth.auth'].symbolize_keys!
+    request.env["omniauth.auth"].symbolize_keys!
   end
 
   # def get_user(hash)
-  #   case hash[:provider]
+  #   case hash[:provider
   #   when 'shibboleth'
   #     ShibbolethService.authenticate(hash)
   #   when 'google_oauth2'
@@ -94,12 +100,14 @@ class TokensController < ActionController::Base
   #   end
   # end
 
-  def authenticate()
-    hash = request.env['omniauth.auth'].symbolize_keys!
-    Rails.logger.debug "request.env['omniauth.auth']: #{hash.inspect}"
+  def authenticate
+    hash = request.env["omniauth.auth"].deep_symbolize_keys
+    Rails.logger.debug "request.env['omniauth.auth']: #{hash[:info]}"
+
     @session = {
       provider: hash[:provider],
-      email: hash[:info][:email],
+      who: hash[:info][:email],
+      name: hash[:info][:name],
       uid: Digest::SHA1.hexdigest(hash[:uid].to_s)
     }
   end
