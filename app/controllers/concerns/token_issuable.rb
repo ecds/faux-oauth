@@ -15,7 +15,10 @@ module TokenIssuable
     auth_response = client && TokenService.create(session)
 
     if auth_response
-      redirect_to generate_url(client.redirect_uri, auth_response)
+      # The whole point of this controller is to redirect to a different host
+      # (the client app). That host is only ever the redirect_uri of a Client
+      # we already looked up above, so it's allowlisted, not user-controlled.
+      redirect_to generate_url(client.redirect_uri, auth_response), allow_other_host: true
     else
       render plain: "Unknown client.", status: :unprocessable_entity
     end
