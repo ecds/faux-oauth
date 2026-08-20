@@ -1,0 +1,9 @@
+<h1>Reset your password</h1>
+
+<%= form_with url: new_password_path(origin: @origin), method: :post do |f| %>
+  <div>
+    <%= f.label :email %>
+    <%= f.email_field :email, required: true %>
+  </div>
+  <%= f.submit "Send reset link" %>
+<% end %>

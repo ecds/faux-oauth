@@ -1,5 +1,6 @@
 class TokensController < ActionController::Base
   include ActionController::Cookies
+  include TokenIssuable
   skip_before_action :verify_authenticity_token
   before_action :set_token, only: [ :show, :update, :destroy ]
   before_action :authenticate, only: [ :create ]
@@ -26,26 +27,7 @@ class TokensController < ActionController::Base
     @session = authenticate
     # FIXME: ATM it doesn't seem like the `omniauth.origin` can be set in
     # the mock. There is an open WIP PR https://github.com/omniauth/omniauth/issues/934
-    if Rails.env.test?
-      @client = Client.find_or_create_by(redirect_uri: "https://emory.edu/redirect.html")
-    else
-      Rails.logger.debug "ORIGIN: #{request.env['omniauth.origin']}"
-      @client = Client.find_by(
-        host: URI.parse(request.env["omniauth.origin"]).host
-      )
-      # if @client.nil?
-      #  @client = Client.find_by(host: 'otb.ecdsdev.org')
-      # end
-    end
-    @auth_response = TokenService.create(@session)
-
-    if @auth_response
-      redirect_to generate_url(
-        @client.redirect_uri, @auth_response
-      )
-    else
-      render json: @token.errors, status: :unprocessable_entity
-    end
+    @auth_response = issue_token_and_redirect(@session, origin: request.env["omniauth.origin"])
   end
 
   # PATCH/PUT /tokens/1
@@ -73,13 +55,6 @@ class TokensController < ActionController::Base
   # Only allow a trusted parameter "white list" through.
   def token_params
     params.fetch(:token, {})
-  end
-
-  def generate_url(url, params = {})
-    uri = URI(url)
-    uri.query = params.to_query
-    Rails.logger.debug "$$$$$$$$$$$$$$$$$$$$$$$$4REDIRECT TO: #{uri}"
-    uri.to_s
   end
 
   #

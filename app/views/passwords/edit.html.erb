@@ -1,0 +1,21 @@
+<h1>Choose a new password</h1>
+
+<% if @errors %>
+  <ul>
+    <% @errors.each do |message| %>
+      <li><%= message %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<%= form_with url: password_path(token: @token, origin: @origin), method: :patch do |f| %>
+  <div>
+    <%= f.label :password, "New password" %>
+    <%= f.password_field :password, required: true %>
+  </div>
+  <div>
+    <%= f.label :password_confirmation %>
+    <%= f.password_field :password_confirmation, required: true %>
+  </div>
+  <%= f.submit "Update password" %>
+<% end %>

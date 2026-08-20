@@ -12,6 +12,10 @@ Rails.application.configure do
   # preloads Rails for running tests, you may have to set it to true.
   config.eager_load = false
 
+  # Needed so ActionController::RateLimiting (used on login/register/password
+  # reset) has a real store to count against in tests.
+  config.cache_store = :memory_store
+
   # Configure public file server for tests with Cache-Control for performance.
   config.public_file_server.enabled = true
   config.public_file_server.headers = {
@@ -37,6 +41,7 @@ Rails.application.configure do
   # The :test delivery method accumulates sent emails in the
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
+  config.action_mailer.default_url_options = { host: "www.example.com" }
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr

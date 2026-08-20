@@ -69,6 +69,10 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = true
 
+  # Rails.cache backs ActionController::RateLimiting; clear it between
+  # examples so one spec's requests don't trip the limit in another.
+  config.before(:each) { Rails.cache.clear }
+
   # RSpec Rails can automatically mix in different behaviours to your tests
   # based on their file location, for example enabling you to call `get` and
   # `post` in specs under `spec/controllers`.

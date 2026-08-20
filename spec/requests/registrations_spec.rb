@@ -1,0 +1,40 @@
+require 'rails_helper'
+
+RSpec.describe 'Registrations', type: :request do
+  describe 'POST /register' do
+    it 'creates an unconfirmed user and generates a confirmation token' do
+      expect {
+        post register_path, params: {
+          user: { email: 'new@example.com', password: 'a very long password', password_confirmation: 'a very long password' }
+        }
+      }.to change(User, :count).by(1)
+
+      user = User.last
+      expect(user.confirmed?).to be false
+      expect(user.confirmation_token).to be_present
+      expect(response).to have_http_status(:ok)
+    end
+
+    it 'rejects invalid params' do
+      post register_path, params: {
+        user: { email: 'not-an-email', password: 'short', password_confirmation: 'short' }
+      }
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(User.count).to eq(0)
+    end
+
+    it 'rate limits repeated registrations' do
+      5.times do |n|
+        post register_path, params: {
+          user: { email: "flood#{n}@example.com", password: 'a very long password', password_confirmation: 'a very long password' }
+        }
+      end
+      post register_path, params: {
+        user: { email: 'oneflood@example.com', password: 'a very long password', password_confirmation: 'a very long password' }
+      }
+
+      expect(response).to have_http_status(:too_many_requests)
+    end
+  end
+end

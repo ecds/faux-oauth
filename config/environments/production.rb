@@ -55,6 +55,11 @@ Rails.application.configure do
   # config.active_job.queue_name_prefix = "faux-oauth_#{Rails.env}"
 
   config.action_mailer.perform_caching = false
+  config.action_mailer.default_url_options = { host: ENV.fetch("APP_HOST") }
+
+  # aws-sdk-rails registers this adapter. Credentials/region come from the
+  # standard AWS SDK chain (ECS task role, AWS_REGION env var, etc).
+  config.action_mailer.delivery_method = :ses
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
