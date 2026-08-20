@@ -25,9 +25,13 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
-/config/credentials.yml.enc
 
 local_env.yml
 # Ignore key files for decrypting credentials and more.
 /config/*.key
+
+# config/credentials/test.key is intentionally NOT ignored: it only decrypts
+# fake values for CI/local test runs, so it's safe to commit. If a real
+# per-environment key is ever added under config/credentials/, ignore it
+# explicitly by name here rather than reinstating a blanket pattern.
 
