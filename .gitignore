@@ -28,3 +28,6 @@
 /config/credentials.yml.enc
 
 local_env.yml
+# Ignore key files for decrypting credentials and more.
+/config/*.key
+
