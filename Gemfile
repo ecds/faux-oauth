@@ -28,7 +28,6 @@ gem "thruster", "~> 0.1", require: false
 # gem "image_processing", "~> 1.2"
 
 gem "jwt", "~> 3.2"
-gem "omniauth-shibboleth", "~> 1.3"
 gem "omniauth-google-oauth2", "~> 1.2"
 gem "omniauth-github", "~> 2.0"
 

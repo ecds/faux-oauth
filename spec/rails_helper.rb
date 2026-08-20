@@ -40,15 +40,6 @@ Shoulda::Matchers.configure do |config|
   end
 end
 
-OmniAuth.config.test_mode = true
-shibboleth_hash = OmniAuth::AuthHash.new({
-  provider: 'shibboleth',
-  uid: 'karl@marx.org',
-  info: {
-    email: 'karl@marx.org'
-  }
-})
-
 google_oauth2_hash = OmniAuth::AuthHash.new({
   provider: 'google_oauth2',
   uid: '123456789',
@@ -57,7 +48,6 @@ google_oauth2_hash = OmniAuth::AuthHash.new({
   }
 })
 
-OmniAuth.config.mock_auth[:shibboleth] = shibboleth_hash
 OmniAuth.config.mock_auth[:google_oauth2] = google_oauth2_hash
 
 RSpec.configure do |config|

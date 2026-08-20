@@ -66,15 +66,6 @@ class TokensController < ActionController::Base
     request.env["omniauth.auth"].symbolize_keys!
   end
 
-  # def get_user(hash)
-  #   case hash[:provider
-  #   when 'shibboleth'
-  #     ShibbolethService.authenticate(hash)
-  #   when 'google_oauth2'
-  #     GoogleOauth2Service.authenticate(hash)
-  #   end
-  # end
-
   def authenticate
     hash = request.env["omniauth.auth"].deep_symbolize_keys
     Rails.logger.debug "request.env['omniauth.auth']: #{hash[:info]}"

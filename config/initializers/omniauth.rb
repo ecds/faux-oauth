@@ -1,13 +1,4 @@
 Rails.application.config.middleware.use OmniAuth::Builder do
-  #  provider :shibboleth,
-  #           uid_field: 'eduPersonPrincipalName',
-  #           info_fields: {
-  #             email: 'eduPersonPrincipalName'
-  #           }
-
-  #  provider :saml,
-  #           idp_sso_target_url: '/Shibboleth.sso/Login'
-
   provider :google_oauth2,
            Rails.application.credentials.google_auth[:key],
            Rails.application.credentials.google_auth[:secret],
