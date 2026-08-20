@@ -25,7 +25,8 @@ COPY . .
 FROM ruby:3.3.4-slim
 
 ENV RAILS_ENV=production \
-    BUNDLE_WITHOUT="development test"
+    BUNDLE_WITHOUT="development test" \
+    APP_HOST=ecds.io
 
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
