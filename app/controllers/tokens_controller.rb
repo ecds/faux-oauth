@@ -60,7 +60,7 @@ class TokensController < ActionController::Base
   #
   # Extracts the user information returned by Omniauth provider.
   #
-  # @return [Hash] Hash of user attributes whith symbolized keys.
+  # @return [Hash] Hash of user attributes with symbolized keys.
   #
   def auth_hash
     request.env["omniauth.auth"].symbolize_keys!
