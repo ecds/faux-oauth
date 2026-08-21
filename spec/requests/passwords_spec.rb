@@ -9,12 +9,16 @@ RSpec.describe 'Passwords', type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(user.reload.reset_password_token).to be_present
+
+      expect(ActionMailer::Base.deliveries.size).to eq(1)
+      expect(ActionMailer::Base.deliveries.last.to).to eq([ user.email ])
     end
 
     it 'responds the same way for an unknown email, to avoid leaking which emails have accounts' do
       post new_password_path, params: { email: 'nobody@example.com' }
 
       expect(response).to have_http_status(:ok)
+      expect(ActionMailer::Base.deliveries).to be_empty
     end
 
     it 'rate limits repeated requests' do

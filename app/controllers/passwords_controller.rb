@@ -1,4 +1,6 @@
 class PasswordsController < ActionController::Base
+  include MailerDeliverable
+
   layout "application"
   rate_limit to: 5, within: 15.minutes, only: :create
 
@@ -12,7 +14,7 @@ class PasswordsController < ActionController::Base
 
     if user
       user.generate_reset_password_token!
-      UserMailer.reset_password_instructions(user, @origin).deliver_later
+      deliver_now_safely UserMailer.reset_password_instructions(user, @origin)
     end
 
     # Always show the same message, whether or not the email matched, so this

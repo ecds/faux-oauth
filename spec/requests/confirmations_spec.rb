@@ -18,4 +18,37 @@ RSpec.describe 'Confirmations', type: :request do
       expect(response).to have_http_status(:not_found)
     end
   end
+
+  describe 'POST /confirmation/resend' do
+    it 'issues a fresh confirmation token for an unconfirmed account, replacing any old one' do
+      user = create(:user)
+      user.generate_confirmation_token!
+      old_token = user.confirmation_token
+
+      post new_confirmation_path, params: { email: user.email }
+
+      expect(response).to have_http_status(:ok)
+      expect(user.reload.confirmation_token).to be_present
+      expect(user.confirmation_token).not_to eq(old_token)
+
+      expect(ActionMailer::Base.deliveries.size).to eq(1)
+      expect(ActionMailer::Base.deliveries.last.to).to eq([ user.email ])
+    end
+
+    it 'does not resend for an already-confirmed account' do
+      user = create(:user, :confirmed)
+
+      post new_confirmation_path, params: { email: user.email }
+
+      expect(response).to have_http_status(:ok)
+      expect(user.reload.confirmation_token).to be_nil
+      expect(ActionMailer::Base.deliveries).to be_empty
+    end
+
+    it 'responds the same way for an unknown email, to avoid leaking which emails have accounts' do
+      post new_confirmation_path, params: { email: 'nobody@example.com' }
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
 end

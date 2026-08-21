@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   post "/register", to: "registrations#create"
 
   get "/confirm/:token", to: "confirmations#show", as: :confirm
+  get "/confirmation/resend", to: "confirmations#new", as: :new_confirmation
+  post "/confirmation/resend", to: "confirmations#create"
 
   get "/password/reset", to: "passwords#new", as: :new_password
   post "/password/reset", to: "passwords#create"

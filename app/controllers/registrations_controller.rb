@@ -1,4 +1,6 @@
 class RegistrationsController < ActionController::Base
+  include MailerDeliverable
+
   layout "application"
   rate_limit to: 5, within: 15.minutes, only: :create
 
@@ -13,7 +15,7 @@ class RegistrationsController < ActionController::Base
 
     if @user.save
       @user.generate_confirmation_token!
-      UserMailer.confirmation_instructions(@user, @origin).deliver_later
+      deliver_now_safely UserMailer.confirmation_instructions(@user, @origin)
       render :check_email
     else
       render :new, status: :unprocessable_entity

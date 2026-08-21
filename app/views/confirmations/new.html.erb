@@ -1,0 +1,13 @@
+<h1>Resend confirmation email</h1>
+
+<p class="message">Enter your email and, if you have an unconfirmed account, we'll send a new confirmation link.</p>
+
+<%= form_with url: new_confirmation_path(origin: @origin), method: :post do |f| %>
+  <div class="field">
+    <%= f.email_field :email, required: true, placeholder: " " %>
+    <%= f.label :email %>
+  </div>
+  <%= f.submit "Resend confirmation email", class: "btn btn-primary" %>
+<% end %>
+
+<p class="helper"><%= link_to "Back to log in", login_path(origin: @origin) %></p>

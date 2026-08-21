@@ -13,6 +13,20 @@ RSpec.describe 'Registrations', type: :request do
       expect(user.confirmed?).to be false
       expect(user.confirmation_token).to be_present
       expect(response).to have_http_status(:ok)
+
+      expect(ActionMailer::Base.deliveries.size).to eq(1)
+      expect(ActionMailer::Base.deliveries.last.to).to eq([ user.email ])
+    end
+
+    it 'still succeeds if mail delivery fails, so a transient SES issue does not 500 signup' do
+      allow_any_instance_of(ActionMailer::MessageDelivery).to receive(:deliver_now).and_raise(Net::SMTPFatalError.new('boom'))
+
+      post register_path, params: {
+        user: { email: 'mailfail@example.com', password: 'a very long password', password_confirmation: 'a very long password' }
+      }
+
+      expect(response).to have_http_status(:ok)
+      expect(User.exists?(email: 'mailfail@example.com')).to be true
     end
 
     it 'rejects invalid params' do
