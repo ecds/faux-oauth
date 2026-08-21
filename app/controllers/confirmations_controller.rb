@@ -1,8 +1,13 @@
 class ConfirmationsController < ActionController::Base
   include MailerDeliverable
+  include ClientResolvable
 
   layout "application"
   rate_limit to: 5, within: 15.minutes, only: :create
+  # :show (the emailed confirmation link) intentionally isn't gated on this —
+  # confirming the address is worth completing on its own even if the origin
+  # is missing or stale; only the resend form needs a live client to send to.
+  before_action :require_known_client!
 
   def show
     user = User.find_by(confirmation_token: params[:token])
@@ -14,6 +19,7 @@ class ConfirmationsController < ActionController::Base
 
     user.confirm!
     @origin = params[:origin]
+    redirect_to generate_url(@client.redirect_uri), allow_other_host: true
   end
 
   def new

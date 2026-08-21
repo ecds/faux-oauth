@@ -1,6 +1,6 @@
 class TokensController < ActionController::Base
   include ActionController::Cookies
-  include TokenIssuable
+  include ClientResolvable
   skip_before_action :verify_authenticity_token
   before_action :set_token, only: [ :show, :update, :destroy ]
   before_action :authenticate, only: [ :create ]

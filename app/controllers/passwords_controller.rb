@@ -1,8 +1,10 @@
 class PasswordsController < ActionController::Base
   include MailerDeliverable
+  include ClientResolvable
 
   layout "application"
   rate_limit to: 5, within: 15.minutes, only: :create
+  before_action :require_known_client!
 
   def new
     @origin = params[:origin]

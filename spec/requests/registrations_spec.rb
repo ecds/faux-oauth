@@ -1,11 +1,21 @@
 require 'rails_helper'
 
 RSpec.describe 'Registrations', type: :request do
+  describe 'GET /register' do
+    it 'shows an error instead of the form when origin is missing' do
+      get register_path
+
+      expect(response).to have_http_status(:not_found)
+      expect(response.body).not_to include('<form')
+    end
+  end
+
   describe 'POST /register' do
     it 'creates an unconfirmed user and generates a confirmation token' do
       expect {
         post register_path, params: {
-          user: { email: 'new@example.com', password: 'a very long password', password_confirmation: 'a very long password' }
+          user: { email: 'new@example.com', password: 'a very long password', password_confirmation: 'a very long password' },
+          origin: 'https://emory.edu'
         }
       }.to change(User, :count).by(1)
 
@@ -22,7 +32,8 @@ RSpec.describe 'Registrations', type: :request do
       allow_any_instance_of(ActionMailer::MessageDelivery).to receive(:deliver_now).and_raise(Net::SMTPFatalError.new('boom'))
 
       post register_path, params: {
-        user: { email: 'mailfail@example.com', password: 'a very long password', password_confirmation: 'a very long password' }
+        user: { email: 'mailfail@example.com', password: 'a very long password', password_confirmation: 'a very long password' },
+        origin: 'https://emory.edu'
       }
 
       expect(response).to have_http_status(:ok)
@@ -31,7 +42,8 @@ RSpec.describe 'Registrations', type: :request do
 
     it 'rejects invalid params' do
       post register_path, params: {
-        user: { email: 'not-an-email', password: 'short', password_confirmation: 'short' }
+        user: { email: 'not-an-email', password: 'short', password_confirmation: 'short' },
+        origin: 'https://emory.edu'
       }
 
       expect(response).to have_http_status(:unprocessable_entity)

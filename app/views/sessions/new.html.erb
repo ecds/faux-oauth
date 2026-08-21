@@ -5,7 +5,6 @@
 <% end %>
 
 <%= form_with url: login_path(origin: @origin), method: :post do |f| %>
-  <%= f.hidden_field :origin, value: @origin %>
   <div class="field">
     <%= f.email_field :email, required: true, placeholder: " " %>
     <%= f.label :email %>

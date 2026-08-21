@@ -1,11 +1,20 @@
 require 'rails_helper'
 
 RSpec.describe 'Passwords', type: :request do
+  describe 'GET /password/reset' do
+    it 'shows an error instead of the form when origin is missing' do
+      get new_password_path
+
+      expect(response).to have_http_status(:not_found)
+      expect(response.body).not_to include('<form')
+    end
+  end
+
   describe 'POST /password/reset' do
     it 'issues a reset token for a known email' do
       user = create(:user, :confirmed)
 
-      post new_password_path, params: { email: user.email }
+      post new_password_path, params: { email: user.email, origin: 'https://emory.edu' }
 
       expect(response).to have_http_status(:ok)
       expect(user.reload.reset_password_token).to be_present
@@ -15,7 +24,7 @@ RSpec.describe 'Passwords', type: :request do
     end
 
     it 'responds the same way for an unknown email, to avoid leaking which emails have accounts' do
-      post new_password_path, params: { email: 'nobody@example.com' }
+      post new_password_path, params: { email: 'nobody@example.com', origin: 'https://emory.edu' }
 
       expect(response).to have_http_status(:ok)
       expect(ActionMailer::Base.deliveries).to be_empty
@@ -25,7 +34,7 @@ RSpec.describe 'Passwords', type: :request do
       user = create(:user, :confirmed)
 
       5.times { post new_password_path, params: { email: user.email } }
-      post new_password_path, params: { email: user.email }
+      post new_password_path, params: { email: user.email, origin: 'https://emory.edu' }
 
       expect(response).to have_http_status(:too_many_requests)
     end
@@ -37,7 +46,7 @@ RSpec.describe 'Passwords', type: :request do
       user.generate_reset_password_token!
 
       patch password_path(token: user.reset_password_token),
-            params: { password: 'a brand new password', password_confirmation: 'a brand new password' }
+            params: { password: 'a brand new password', password_confirmation: 'a brand new password', origin: 'https://emory.edu' }
 
       expect(response).to have_http_status(:ok)
       expect(user.reload.authenticate('a brand new password')).to be_truthy
@@ -50,7 +59,7 @@ RSpec.describe 'Passwords', type: :request do
       user.update!(reset_password_sent_at: 3.hours.ago)
 
       patch password_path(token: user.reset_password_token),
-            params: { password: 'a brand new password', password_confirmation: 'a brand new password' }
+            params: { password: 'a brand new password', password_confirmation: 'a brand new password', origin: 'https://emory.edu' }
 
       expect(response).to have_http_status(:not_found)
     end

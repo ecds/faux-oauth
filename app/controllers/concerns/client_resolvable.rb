@@ -1,14 +1,31 @@
 # frozen_string_literal: true
 
 #
-# Shared by every controller that hands a client app back a token — the
-# OmniAuth callback and the local-account flows alike — so a client app
-# is redirected the same way no matter how the person authenticated.
+# Shared by every controller whose request only makes sense in the context
+# of a known client app — resolving the Client for a given origin, issuing
+# it a token and redirecting back (the OmniAuth callback and local-account
+# flows alike, so a client app is redirected the same way no matter how the
+# person authenticated), and refusing to even render a form when there's no
+# client to eventually redirect back to.
 #
-module TokenIssuable
+module ClientResolvable
   extend ActiveSupport::Concern
 
   private
+
+  # Renders an error instead of the normal action when the request has no
+  # origin, or the origin doesn't match any known Client. Meant as a
+  # before_action, so a bad/missing origin fails fast at page-load instead
+  # of only surfacing after someone fills out and submits a form.
+  def require_known_client!
+    if params[:origin].blank?
+      render "shared/unknown_client", status: :not_found
+      return
+    end
+
+    @client = resolve_client(params[:origin])
+    render "shared/unknown_client", status: :not_found unless @client
+  end
 
   def issue_token_and_redirect(session, origin:)
     client = resolve_client(origin)

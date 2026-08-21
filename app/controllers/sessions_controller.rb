@@ -1,8 +1,9 @@
 class SessionsController < ActionController::Base
-  include TokenIssuable
+  include ClientResolvable
 
   layout "application"
   rate_limit to: 10, within: 3.minutes, only: :create
+  before_action :require_known_client!
 
   def new
     @origin = params[:origin]

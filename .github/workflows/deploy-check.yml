@@ -3,7 +3,7 @@ name: Deploy Check
 on:
   pull_request:
   push:
-    branches: [develop, main]
+    branches: [develop]
 
 permissions:
   id-token: write # This is required for requesting the JWT

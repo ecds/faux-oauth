@@ -126,3 +126,5 @@ or `main`. `.github/workflows/deploy-check.yml` runs the same script with
 `DRY_RUN=true` on every PR, to confirm the image still builds and the AWS
 role still has the permissions it needs, without pushing or deploying
 anything.
+
+![Faux OAuth Flow](FauxOAuth.png)
