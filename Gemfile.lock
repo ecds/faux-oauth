@@ -78,6 +78,10 @@ GEM
     addressable (2.8.8)
       public_suffix (>= 2.0.2, < 8.0)
     ast (2.4.3)
+    aws-actionmailer-ses (1.2.0)
+      actionmailer (>= 7.1.0)
+      aws-sdk-ses (~> 1, >= 1.50.0)
+      aws-sdk-sesv2 (~> 1, >= 1.34.0)
     aws-eventstream (1.4.0)
     aws-partitions (1.1281.0)
     aws-sdk-core (3.254.1)
@@ -91,6 +95,12 @@ GEM
     aws-sdk-rails (5.2.0)
       aws-sdk-core (~> 3)
       railties (>= 7.1.0)
+    aws-sdk-ses (1.102.0)
+      aws-sdk-core (~> 3, >= 3.254.0)
+      aws-sigv4 (~> 1.5)
+    aws-sdk-sesv2 (1.106.0)
+      aws-sdk-core (~> 3, >= 3.254.0)
+      aws-sigv4 (~> 1.5)
     aws-sigv4 (1.12.1)
       aws-eventstream (~> 1, >= 1.0.2)
     base64 (0.3.0)
@@ -414,6 +424,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  aws-actionmailer-ses (~> 1)
   aws-sdk-rails (~> 5.2)
   bcrypt (~> 3.1.7)
   bootsnap (~> 1.25)
@@ -451,10 +462,13 @@ CHECKSUMS
   activesupport (8.1.3.1) sha256=85458765f25ea48b9019c46b6bb3fa5683197bf4280d9f06710a6e8d7a831376
   addressable (2.8.8) sha256=7c13b8f9536cf6364c03b9d417c19986019e28f7c00ac8132da4eb0fe393b057
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
+  aws-actionmailer-ses (1.2.0) sha256=e01ccfcc5bf1449abb91bb8b15e7945e97310144c7f67fee8d9b76de2e89107f
   aws-eventstream (1.4.0) sha256=116bf85c436200d1060811e6f5d2d40c88f65448f2125bc77ffce5121e6e183b
   aws-partitions (1.1281.0) sha256=97fcc7d6a068ab790a1efcd8c6587c08fb108b4bed7ff1409cb47e0d642782ec
   aws-sdk-core (3.254.1) sha256=518089e32134c3478cd4ec63d07fb966546a45e9e4cbf5f80d2cf16d5699d29b
   aws-sdk-rails (5.2.0) sha256=639b168a3fdfae4b6ac3c714fabdb5c390f0246f73740502273447958b30e8b4
+  aws-sdk-ses (1.102.0) sha256=02bca66d12b856c37fce614f0f2ed68198af1ae938f41e08c53afac3bda2618f
+  aws-sdk-sesv2 (1.106.0) sha256=f0a3d18d1e6bf2a621defcaa215831176fb40c42810be44d7448d95b693ee766
   aws-sigv4 (1.12.1) sha256=6973ff95cb0fd0dc58ba26e90e9510a2219525d07620c8babeb70ef831826c00
   base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
   bcrypt (3.1.22) sha256=1f0072e88c2d705d94aff7f2c5cb02eb3f1ec4b8368671e19112527489f29032

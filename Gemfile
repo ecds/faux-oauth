@@ -33,6 +33,7 @@ gem "omniauth-github", "~> 2.0"
 
 # Delivers mail through AWS SES; registers the :ses Action Mailer adapter
 gem "aws-sdk-rails", "~> 5.2"
+gem "aws-actionmailer-ses", "~> 1"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

@@ -60,6 +60,7 @@ Rails.application.configure do
   # aws-sdk-rails registers this adapter. Credentials/region come from the
   # standard AWS SDK chain (ECS task role, AWS_REGION env var, etc).
   config.action_mailer.delivery_method = :ses
+  config.action_mailer.ses_settings = { region: "us-east-1" }
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
