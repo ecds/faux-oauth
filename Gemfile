@@ -3,7 +3,7 @@ source "https://rubygems.org"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.1.3"
 # Use sqlite3 as the database for Active Record
-gem "sqlite3", "~> 2.9"
+gem "sqlite3", "~> 2.10"
 # Postgres in production is 16.13; the pg gem's libpq wire protocol is
 # compatible well beyond that, so pin at minor rather than tracking the server.
 gem "pg", "~> 1.6"
